@@ -49,8 +49,38 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	// Register the "Open in GitHub at Current Commit" command
+	const openInGitHubAtCommitDisposable = vscode.commands.registerCommand('openingithub.openInGitHubAtCommit', async (uri?: vscode.Uri) => {
+		try {
+			// If no URI is provided (e.g., called from editor context), use the active editor's file
+			let filePath: string;
+			
+			if (uri) {
+				filePath = uri.fsPath;
+			} else {
+				const activeEditor = vscode.window.activeTextEditor;
+				if (!activeEditor) {
+					vscode.window.showErrorMessage('No file is currently open');
+					return;
+				}
+				filePath = activeEditor.document.uri.fsPath;
+			}
+			
+			const gitHubUrl = await getGitHubUrlAtCommit(filePath);
+			
+			if (gitHubUrl) {
+				vscode.env.openExternal(vscode.Uri.parse(gitHubUrl));
+			} else {
+				vscode.window.showErrorMessage('Could not determine GitHub URL for this file at current commit. Make sure this is a Git repository with a GitHub remote.');
+			}
+		} catch (error) {
+			vscode.window.showErrorMessage(`Error opening GitHub URL: ${error}`);
+		}
+	});
+
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(openInGitHubDisposable);
+	context.subscriptions.push(openInGitHubAtCommitDisposable);
 }
 
 async function getGitHubUrl(filePath: string): Promise<string | null> {
@@ -89,6 +119,46 @@ async function getGitHubUrl(filePath: string): Promise<string | null> {
 		return fileUrl;
 	} catch (error) {
 		console.error('Error getting GitHub URL:', error);
+		return null;
+	}
+}
+
+async function getGitHubUrlAtCommit(filePath: string): Promise<string | null> {
+	const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath));
+	if (!workspaceFolder) {
+		return null;
+	}
+
+	try {
+		const { exec } = require('child_process');
+		const { promisify } = require('util');
+		const execAsync = promisify(exec);
+
+		// Get git remote URL
+		const { stdout: remoteUrl } = await execAsync('git remote get-url origin', {
+			cwd: workspaceFolder.uri.fsPath
+		});
+
+		// Convert git URL to GitHub web URL
+		const githubWebUrl = convertGitUrlToWebUrl(remoteUrl.trim());
+		if (!githubWebUrl) {
+			return null;
+		}
+
+		// Get relative path from workspace root
+		const relativePath = path.relative(workspaceFolder.uri.fsPath, filePath);
+		
+		// Get current commit hash
+		const { stdout: currentCommit } = await execAsync('git rev-parse HEAD', {
+			cwd: workspaceFolder.uri.fsPath
+		});
+
+		// Construct GitHub file URL at specific commit
+		const fileUrl = `${githubWebUrl}/blob/${currentCommit.trim()}/${relativePath.replace(/\\/g, '/')}`;
+		
+		return fileUrl;
+	} catch (error) {
+		console.error('Error getting GitHub URL at commit:', error);
 		return null;
 	}
 }

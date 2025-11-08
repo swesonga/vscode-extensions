@@ -20,6 +20,10 @@
       {
         "command": "openingithub.openInGitHub",
         "title": "Open in GitHub"
+      },
+      {
+        "command": "openingithub.openInGitHubAtCommit",
+        "title": "Open in GitHub at Current Commit"
       }
     ],
     "menus": {
@@ -28,8 +32,13 @@
           "when": "!explorerResourceIsFolder",
           "command": "openingithub.openInGitHub",
           "group": "navigation"
-      }
-    ]
+        },
+        {
+          "when": "!explorerResourceIsFolder",
+          "command": "openingithub.openInGitHubAtCommit",
+          "group": "navigation"
+        }
+      ]
     }
   },
   "scripts": {
