@@ -16,8 +16,21 @@
       {
         "command": "openingithub.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "openingithub.openInGitHub",
+        "title": "Open in GitHub"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "!explorerResourceIsFolder",
+          "command": "openingithub.openInGitHub",
+          "group": "navigation"
       }
     ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
