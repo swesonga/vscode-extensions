@@ -1,0 +1,64 @@
+$ yo code
+
+     _-----_     ╭──────────────────────────╮
+    |       |    │   Welcome to the Visual  │
+    |--(o)--|    │   Studio Code Extension  │
+   `---------´   │        generator!        │
+    ( _´U`_ )    ╰──────────────────────────╯
+    /___A___\   /
+     |  ~  |
+   __'.___.'__
+ ´   `  |° ´ Y `
+
+? What type of extension do you want to create? New Extension (TypeScript)
+? What's the name of your extension? OpenInGitHub
+? What's the identifier of your extension? openingithub
+? What's the description of your extension? Opens the GitHub URL for a selected file
+? Initialize a git repository? No
+? Which bundler to use? unbundled
+? Which package manager to use? npm
+
+Writing in C:\repos\vscode-extensions\openingithub...
+   create openingithub\.vscode\extensions.json
+   create openingithub\.vscode\launch.json
+   create openingithub\.vscode\settings.json
+   create openingithub\.vscode\tasks.json
+   create openingithub\package.json
+   create openingithub\tsconfig.json
+   create openingithub\.vscodeignore
+   create openingithub\vsc-extension-quickstart.md
+   create openingithub\README.md
+   create openingithub\CHANGELOG.md
+   create openingithub\src\extension.ts
+   create openingithub\src\test\extension.test.ts
+   create openingithub\.vscode-test.mjs
+   create openingithub\eslint.config.mjs
+
+Changes to package.json were detected.
+
+Running npm install for you to install the required dependencies.
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+
+added 260 packages, and audited 261 packages in 8s
+
+74 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+Your extension openingithub has been created!
+
+To start editing with Visual Studio Code, use the following commands:
+
+     code openingithub
+
+Open vsc-extension-quickstart.md inside the new extension for further instructions
+on how to modify, test and publish your extension.
+
+For more information, also visit http://code.visualstudio.com and follow us @code.
+
+
+? Do you want to open the new folder with Visual Studio Code? (Use arrow keys)
+❯ Open with `code`
+  Skip
