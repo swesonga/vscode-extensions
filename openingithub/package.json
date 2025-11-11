@@ -28,6 +28,36 @@
       {
         "command": "openingithub.openInGitHubAtCommitAndLine",
         "title": "Open in GitHub at Current Commit and Line"
+      },
+      {
+        "command": "openingithub.openJDKTip",
+        "title": "Open in GitHub on Tip"
+      },
+      {
+        "command": "openingithub.openJDK25u",
+        "title": "Open in GitHub on jdk25u"
+      },
+      {
+        "command": "openingithub.openJDK24u",
+        "title": "Open in GitHub on jdk24u"
+      },
+      {
+        "command": "openingithub.openJDK21u",
+        "title": "Open in GitHub on jdk21u"
+      },
+      {
+        "command": "openingithub.openJDK17u",
+        "title": "Open in GitHub on jdk17u"
+      },
+      {
+        "command": "openingithub.openJDK11u",
+        "title": "Open in GitHub on jdk11u"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "openingithub.openjdk",
+        "label": "Open in GitHub (OpenJDK)"
       }
     ],
     "menus": {
@@ -46,6 +76,11 @@
           "when": "!explorerResourceIsFolder",
           "command": "openingithub.openInGitHubAtCommitAndLine",
           "group": "navigation"
+        },
+        {
+          "when": "!explorerResourceIsFolder",
+          "submenu": "openingithub.openjdk",
+          "group": "navigation"
         }
       ],
       "editor/context": [
@@ -60,6 +95,30 @@
         {
           "command": "openingithub.openInGitHubAtCommitAndLine",
           "group": "navigation"
+        },
+        {
+          "submenu": "openingithub.openjdk",
+          "group": "navigation"
+        }
+      ],
+      "openingithub.openjdk": [
+        {
+          "command": "openingithub.openJDKTip"
+        },
+        {
+          "command": "openingithub.openJDK25u"
+        },
+        {
+          "command": "openingithub.openJDK24u"
+        },
+        {
+          "command": "openingithub.openJDK21u"
+        },
+        {
+          "command": "openingithub.openJDK17u"
+        },
+        {
+          "command": "openingithub.openJDK11u"
         }
       ]
     }

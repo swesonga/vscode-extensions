@@ -106,10 +106,41 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	// Register OpenJDK-specific commands
+	const openJDKTipDisposable = vscode.commands.registerCommand('openingithub.openJDKTip', async (uri?: vscode.Uri) => {
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk');
+	});
+
+	const openJDK25uDisposable = vscode.commands.registerCommand('openingithub.openJDK25u', async (uri?: vscode.Uri) => {
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk25u');
+	});
+
+	const openJDK24uDisposable = vscode.commands.registerCommand('openingithub.openJDK24u', async (uri?: vscode.Uri) => {
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk24u');
+	});
+
+	const openJDK21uDisposable = vscode.commands.registerCommand('openingithub.openJDK21u', async (uri?: vscode.Uri) => {
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk21u');
+	});
+
+	const openJDK17uDisposable = vscode.commands.registerCommand('openingithub.openJDK17u', async (uri?: vscode.Uri) => {
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk17u');
+	});
+
+	const openJDK11uDisposable = vscode.commands.registerCommand('openingithub.openJDK11u', async (uri?: vscode.Uri) => {
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk11u');
+	});
+
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(openInGitHubDisposable);
 	context.subscriptions.push(openInGitHubAtCommitDisposable);
 	context.subscriptions.push(openInGitHubAtCommitAndLineDisposable);
+	context.subscriptions.push(openJDKTipDisposable);
+	context.subscriptions.push(openJDK25uDisposable);
+	context.subscriptions.push(openJDK24uDisposable);
+	context.subscriptions.push(openJDK21uDisposable);
+	context.subscriptions.push(openJDK17uDisposable);
+	context.subscriptions.push(openJDK11uDisposable);
 }
 
 async function getGitHubUrl(filePath: string): Promise<string | null> {
@@ -250,6 +281,102 @@ function convertGitUrlToWebUrl(gitUrl: string): string | null {
 	}
 	
 	return null;
+}
+
+async function openJDKRepository(uri: vscode.Uri | undefined, targetRepoUrl: string): Promise<void> {
+	try {
+		// Get file path
+		let filePath: string;
+		let lineNumber: number | undefined;
+		
+		if (uri) {
+			filePath = uri.fsPath;
+		} else {
+			const activeEditor = vscode.window.activeTextEditor;
+			if (!activeEditor) {
+				vscode.window.showErrorMessage('No file is currently open');
+				return;
+			}
+			filePath = activeEditor.document.uri.fsPath;
+			// Get the current cursor line (1-based) when called from editor
+			lineNumber = activeEditor.selection.active.line + 1;
+		}
+
+		// Check if this is an OpenJDK repository
+		const currentGitHubUrl = await getCurrentGitHubWebUrl(filePath);
+		if (!currentGitHubUrl || !currentGitHubUrl.startsWith('https://github.com/openjdk/jdk')) {
+			vscode.window.showErrorMessage('This command is only available for OpenJDK repositories.');
+			return;
+		}
+
+		// Get relative path and construct URL for target repository
+		const gitHubUrl = await getOpenJDKUrl(filePath, targetRepoUrl, lineNumber);
+		
+		if (gitHubUrl) {
+			vscode.env.openExternal(vscode.Uri.parse(gitHubUrl));
+		} else {
+			vscode.window.showErrorMessage('Could not determine GitHub URL for this file.');
+		}
+	} catch (error) {
+		vscode.window.showErrorMessage(`Error opening GitHub URL: ${error}`);
+	}
+}
+
+async function getCurrentGitHubWebUrl(filePath: string): Promise<string | null> {
+	const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath));
+	if (!workspaceFolder) {
+		return null;
+	}
+
+	try {
+		const { exec } = require('child_process');
+		const { promisify } = require('util');
+		const execAsync = promisify(exec);
+
+		// Get git remote URL
+		const { stdout: remoteUrl } = await execAsync('git remote get-url origin', {
+			cwd: workspaceFolder.uri.fsPath
+		});
+
+		return convertGitUrlToWebUrl(remoteUrl.trim());
+	} catch (error) {
+		console.error('Error getting current GitHub URL:', error);
+		return null;
+	}
+}
+
+async function getOpenJDKUrl(filePath: string, targetRepoUrl: string, lineNumber?: number): Promise<string | null> {
+	const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath));
+	if (!workspaceFolder) {
+		return null;
+	}
+
+	try {
+		const { exec } = require('child_process');
+		const { promisify } = require('util');
+		const execAsync = promisify(exec);
+
+		// Get relative path from workspace root
+		const relativePath = path.relative(workspaceFolder.uri.fsPath, filePath);
+		
+		// Get current branch
+		const { stdout: currentBranch } = await execAsync('git rev-parse --abbrev-ref HEAD', {
+			cwd: workspaceFolder.uri.fsPath
+		});
+
+		// Construct GitHub file URL with target repository
+		let fileUrl = `${targetRepoUrl}/blob/${currentBranch.trim()}/${relativePath.replace(/\\/g, '/')}`;
+		
+		// Add line number anchor if provided
+		if (lineNumber !== undefined) {
+			fileUrl += `#L${lineNumber}`;
+		}
+		
+		return fileUrl;
+	} catch (error) {
+		console.error('Error getting OpenJDK URL:', error);
+		return null;
+	}
 }
 
 // This method is called when your extension is deactivated
