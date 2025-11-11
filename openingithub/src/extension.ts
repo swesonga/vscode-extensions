@@ -85,20 +85,14 @@ export function activate(context: vscode.ExtensionContext) {
 			let filePath: string;
 			let lineNumber: number | undefined;
 			
-			if (uri) {
-				filePath = uri.fsPath;
-				// When called from explorer, we don't have line number info
-				lineNumber = undefined;
-			} else {
-				const activeEditor = vscode.window.activeTextEditor;
-				if (!activeEditor) {
-					vscode.window.showErrorMessage('No file is currently open');
-					return;
-				}
-				filePath = activeEditor.document.uri.fsPath;
-				// Get the current cursor line (1-based)
-				lineNumber = activeEditor.selection.active.line + 1;
+			const activeEditor = vscode.window.activeTextEditor;
+			if (!activeEditor) {
+				vscode.window.showErrorMessage('No file is currently open');
+				return;
 			}
+			filePath = activeEditor.document.uri.fsPath;
+			// Get the current cursor line (1-based)
+			lineNumber = activeEditor.selection.active.line + 1;
 			
 			const gitHubUrl = await getGitHubUrlAtCommitAndLine(filePath, lineNumber);
 			
