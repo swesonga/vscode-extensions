@@ -284,16 +284,16 @@ function convertGitUrlToWebUrl(gitUrl: string): string | null {
 }
 
 function isOpenJDKRepository(githubUrl: string): boolean {
-	// Check if the URL matches the pattern: https://github.com/openjdk/jdk followed by optional digits and 'u'
+	// Check if the URL matches the pattern: https://github.com/{any-org}/jdk followed by optional digits and 'u'
 	// Examples:
 	// - https://github.com/openjdk/jdk (matches)
 	// - https://github.com/openjdk/jdk11u (matches)
-	// - https://github.com/openjdk/jdk17u (matches)
-	// - https://github.com/openjdk/jdk21u (matches)
+	// - https://github.com/myorg/jdk17u (matches)
+	// - https://github.com/company/jdk21u (matches)
 	// - https://github.com/openjdk/jdk-something (does not match)
 	// - https://github.com/openjdk/jdkother (does not match)
 	
-	const openJDKPattern = /^https:\/\/github\.com\/openjdk\/jdk(\d+u)?$/;
+	const openJDKPattern = /^https:\/\/github\.com\/[^\/]+\/jdk(\d+u)?$/;
 	return openJDKPattern.test(githubUrl);
 }
 
