@@ -24,6 +24,10 @@
       {
         "command": "openingithub.openInGitHubAtCommit",
         "title": "Open in GitHub at Current Commit"
+      },
+      {
+        "command": "openingithub.openInGitHubAtCommitAndLine",
+        "title": "Open in GitHub at Current Commit and Line"
       }
     ],
     "menus": {
@@ -36,6 +40,25 @@
         {
           "when": "!explorerResourceIsFolder",
           "command": "openingithub.openInGitHubAtCommit",
+          "group": "navigation"
+        },
+        {
+          "when": "!explorerResourceIsFolder",
+          "command": "openingithub.openInGitHubAtCommitAndLine",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "openingithub.openInGitHub",
+          "group": "navigation"
+        },
+        {
+          "command": "openingithub.openInGitHubAtCommit",
+          "group": "navigation"
+        },
+        {
+          "command": "openingithub.openInGitHubAtCommitAndLine",
           "group": "navigation"
         }
       ]
