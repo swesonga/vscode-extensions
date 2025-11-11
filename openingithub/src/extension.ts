@@ -283,6 +283,20 @@ function convertGitUrlToWebUrl(gitUrl: string): string | null {
 	return null;
 }
 
+function isOpenJDKRepository(githubUrl: string): boolean {
+	// Check if the URL matches the pattern: https://github.com/openjdk/jdk followed by optional digits and 'u'
+	// Examples:
+	// - https://github.com/openjdk/jdk (matches)
+	// - https://github.com/openjdk/jdk11u (matches)
+	// - https://github.com/openjdk/jdk17u (matches)
+	// - https://github.com/openjdk/jdk21u (matches)
+	// - https://github.com/openjdk/jdk-something (does not match)
+	// - https://github.com/openjdk/jdkother (does not match)
+	
+	const openJDKPattern = /^https:\/\/github\.com\/openjdk\/jdk(\d+u)?$/;
+	return openJDKPattern.test(githubUrl);
+}
+
 async function openJDKRepository(uri: vscode.Uri | undefined, targetRepoUrl: string): Promise<void> {
 	try {
 		// Get file path
@@ -304,7 +318,7 @@ async function openJDKRepository(uri: vscode.Uri | undefined, targetRepoUrl: str
 
 		// Check if this is an OpenJDK repository
 		const currentGitHubUrl = await getCurrentGitHubWebUrl(filePath);
-		if (!currentGitHubUrl || !currentGitHubUrl.startsWith('https://github.com/openjdk/jdk')) {
+		if (!currentGitHubUrl || !isOpenJDKRepository(currentGitHubUrl)) {
 			vscode.window.showErrorMessage('This command is only available for OpenJDK repositories.');
 			return;
 		}
