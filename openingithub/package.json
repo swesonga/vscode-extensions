@@ -80,7 +80,7 @@
         {
           "when": "!explorerResourceIsFolder",
           "submenu": "openingithub.openjdk",
-          "group": "navigation"
+          "group": "1_openjdk"
         }
       ],
       "editor/context": [
@@ -98,7 +98,7 @@
         },
         {
           "submenu": "openingithub.openjdk",
-          "group": "navigation"
+          "group": "1_openjdk"
         }
       ],
       "openingithub.openjdk": [
