@@ -65,17 +65,17 @@
         {
           "when": "!explorerResourceIsFolder",
           "command": "openingithub.openInGitHub",
-          "group": "navigation"
+          "group": "1_openjdk"
         },
         {
           "when": "!explorerResourceIsFolder",
           "command": "openingithub.openInGitHubAtCommit",
-          "group": "navigation"
+          "group": "1_openjdk"
         },
         {
           "when": "!explorerResourceIsFolder",
           "command": "openingithub.openInGitHubAtCommitAndLine",
-          "group": "navigation"
+          "group": "1_openjdk"
         },
         {
           "when": "!explorerResourceIsFolder",
@@ -86,15 +86,15 @@
       "editor/context": [
         {
           "command": "openingithub.openInGitHub",
-          "group": "navigation"
+          "group": "1_openjdk"
         },
         {
           "command": "openingithub.openInGitHubAtCommit",
-          "group": "navigation"
+          "group": "1_openjdk"
         },
         {
           "command": "openingithub.openInGitHubAtCommitAndLine",
-          "group": "navigation"
+          "group": "1_openjdk"
         },
         {
           "submenu": "openingithub.openjdk",
