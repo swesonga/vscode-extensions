@@ -108,27 +108,27 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register OpenJDK-specific commands
 	const openJDKTipDisposable = vscode.commands.registerCommand('openingithub.openJDKTip', async (uri?: vscode.Uri) => {
-		await openJDKRepository(uri, 'https://github.com/openjdk/jdk');
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk', "master");
 	});
 
 	const openJDK25uDisposable = vscode.commands.registerCommand('openingithub.openJDK25u', async (uri?: vscode.Uri) => {
-		await openJDKRepository(uri, 'https://github.com/openjdk/jdk25u');
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk25u', "master");
 	});
 
 	const openJDK24uDisposable = vscode.commands.registerCommand('openingithub.openJDK24u', async (uri?: vscode.Uri) => {
-		await openJDKRepository(uri, 'https://github.com/openjdk/jdk24u');
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk24u', "master");
 	});
 
 	const openJDK21uDisposable = vscode.commands.registerCommand('openingithub.openJDK21u', async (uri?: vscode.Uri) => {
-		await openJDKRepository(uri, 'https://github.com/openjdk/jdk21u');
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk21u', "master");
 	});
 
 	const openJDK17uDisposable = vscode.commands.registerCommand('openingithub.openJDK17u', async (uri?: vscode.Uri) => {
-		await openJDKRepository(uri, 'https://github.com/openjdk/jdk17u');
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk17u', "master");
 	});
 
 	const openJDK11uDisposable = vscode.commands.registerCommand('openingithub.openJDK11u', async (uri?: vscode.Uri) => {
-		await openJDKRepository(uri, 'https://github.com/openjdk/jdk11u');
+		await openJDKRepository(uri, 'https://github.com/openjdk/jdk11u', "master");
 	});
 
 	context.subscriptions.push(disposable);
@@ -293,11 +293,11 @@ function isOpenJDKRepository(githubUrl: string): boolean {
 	// - https://github.com/openjdk/jdk-something (does not match)
 	// - https://github.com/openjdk/jdkother (does not match)
 	
-	const openJDKPattern = /^https:\/\/github\.com\/[^\/]+\/jdk(\d+u)?$/;
+	const openJDKPattern = /^https:\/\/github\.com\/[^\/]+\/(openjdk\-)?jdk(\d+u)?$/;
 	return openJDKPattern.test(githubUrl);
 }
 
-async function openJDKRepository(uri: vscode.Uri | undefined, targetRepoUrl: string): Promise<void> {
+async function openJDKRepository(uri: vscode.Uri | undefined, targetRepoUrl: string, targetRepoBranch?: string | undefined): Promise<void> {
 	try {
 		// Get file path
 		let filePath: string;
@@ -324,7 +324,7 @@ async function openJDKRepository(uri: vscode.Uri | undefined, targetRepoUrl: str
 		}
 
 		// Get relative path and construct URL for target repository
-		const gitHubUrl = await getOpenJDKUrl(filePath, targetRepoUrl, lineNumber);
+		const gitHubUrl = await getOpenJDKUrl(filePath, targetRepoUrl, lineNumber, targetRepoBranch);
 		
 		if (gitHubUrl) {
 			vscode.env.openExternal(vscode.Uri.parse(gitHubUrl));
@@ -359,7 +359,7 @@ async function getCurrentGitHubWebUrl(filePath: string): Promise<string | null> 
 	}
 }
 
-async function getOpenJDKUrl(filePath: string, targetRepoUrl: string, lineNumber?: number): Promise<string | null> {
+async function getOpenJDKUrl(filePath: string, targetRepoUrl: string, lineNumber?: number, targetRepoBranch?: string | undefined): Promise<string | null> {
 	const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath));
 	if (!workspaceFolder) {
 		return null;
@@ -379,7 +379,10 @@ async function getOpenJDKUrl(filePath: string, targetRepoUrl: string, lineNumber
 		});
 
 		// Construct GitHub file URL with target repository
-		let fileUrl = `${targetRepoUrl}/blob/${currentBranch.trim()}/${relativePath.replace(/\\/g, '/')}`;
+		if (!targetRepoBranch) {
+			targetRepoBranch = currentBranch.trim();
+		}
+		let fileUrl = `${targetRepoUrl}/blob/${targetRepoBranch}/${relativePath.replace(/\\/g, '/')}`;
 		
 		// Add line number anchor if provided
 		if (lineNumber !== undefined) {
