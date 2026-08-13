@@ -1,7 +1,6 @@
 {
   "name": "multireplace",
   "displayName": "MultiReplace",
-  "publisher": "Saint Wesonga",
   "description": "Replace multiple strings in the current document using a configurable table.",
   "version": "0.0.1",
   "engines": {
