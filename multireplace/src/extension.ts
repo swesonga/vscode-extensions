@@ -76,7 +76,7 @@ function openSettings(context: vscode.ExtensionContext): void {
 		'multiReplace.settings',
 		'MultiReplace Settings',
 		vscode.ViewColumn.Active,
-		{ enableScripts: true }
+		{ enableScripts: true, retainContextWhenHidden: true }
 	);
 
 	panel.webview.html = getSettingsHtml(panel.webview, getReplacementPairs());
