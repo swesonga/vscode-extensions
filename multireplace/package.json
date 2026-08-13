@@ -1,0 +1,81 @@
+{
+  "name": "multireplace",
+  "displayName": "MultiReplace",
+  "description": "Replace multiple strings in the current document using a configurable table.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.105.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "multiReplace.replaceInCurrentDocument",
+        "title": "MultiReplace in Current Document"
+      },
+      {
+        "command": "multiReplace.openSettings",
+        "title": "MultiReplace: Open Settings"
+      }
+    ],
+    "configuration": {
+      "title": "MultiReplace",
+      "properties": {
+        "multiReplace.replacements": {
+          "type": "array",
+          "default": [],
+          "description": "Literal search and replacement pairs, applied in table order.",
+          "scope": "window",
+          "items": {
+            "type": "object",
+            "required": [
+              "search",
+              "replace"
+            ],
+            "properties": {
+              "search": {
+                "type": "string",
+                "description": "Text to find."
+              },
+              "replace": {
+                "type": "string",
+                "description": "Replacement text."
+              }
+            }
+          }
+        }
+      }
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "multiReplace.replaceInCurrentDocument",
+          "group": "1_modification"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.105.0",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.36.0",
+    "typescript": "^5.9.3"
+  }
+}
