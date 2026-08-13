@@ -54,7 +54,11 @@
       "editor/context": [
         {
           "command": "multiReplace.replaceInCurrentDocument",
-          "group": "1_modification"
+          "group": "1_modification@1"
+        },
+        {
+          "command": "multiReplace.openSettings",
+          "group": "1_modification@2"
         }
       ]
     }
