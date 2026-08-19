@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { applyReplacements, getUniqueReplacementPairs } from '../extension';
+import { applyReplacements, getDuplicateSearchValues, getUniqueReplacementPairs } from '../extension';
 
 suite('MultiReplace', () => {
 	test('replaces every literal occurrence', () => {
@@ -29,7 +29,7 @@ suite('MultiReplace', () => {
 		);
 	});
 
-	test('removes duplicate pairs while preserving first occurrence order', () => {
+	test('removes duplicate search values while preserving first occurrence order', () => {
 		assert.deepStrictEqual(
 			getUniqueReplacementPairs([
 				{ search: 'one', replace: '1' },
@@ -39,9 +39,22 @@ suite('MultiReplace', () => {
 			]),
 			[
 				{ search: 'one', replace: '1' },
-				{ search: 'two', replace: '2' },
-				{ search: 'one', replace: 'first' }
+				{ search: 'two', replace: '2' }
 			]
+		);
+	});
+
+	test('reports each duplicate search value once', () => {
+		assert.deepStrictEqual(
+			getDuplicateSearchValues([
+				{ search: 'one', replace: '1' },
+				{ search: 'two', replace: '2' },
+				{ search: 'one', replace: 'first' },
+				{ search: 'one', replace: 'single' },
+				{ search: 'ONE', replace: 'uppercase' },
+				{ search: 'two', replace: 'second' }
+			]),
+			['one', 'two']
 		);
 	});
 

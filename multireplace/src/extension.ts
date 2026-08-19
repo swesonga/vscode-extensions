@@ -35,14 +35,27 @@ export function getUniqueReplacementPairs(value: unknown): ReplacementPair[] {
 			throw new Error('Each entry must be an object with string "search" and "replace" properties.');
 		}
 
-		const key = JSON.stringify([pair.search, pair.replace]);
-		if (!seen.has(key)) {
-			seen.add(key);
+		if (!seen.has(pair.search)) {
+			seen.add(pair.search);
 			uniquePairs.push({ search: pair.search, replace: pair.replace });
 		}
 	}
 
 	return uniquePairs;
+}
+
+export function getDuplicateSearchValues(pairs: readonly ReplacementPair[]): string[] {
+	const seen = new Set<string>();
+	const duplicates = new Set<string>();
+	for (const pair of pairs) {
+		if (seen.has(pair.search)) {
+			duplicates.add(pair.search);
+		} else {
+			seen.add(pair.search);
+		}
+	}
+
+	return [...duplicates];
 }
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -183,7 +196,16 @@ function openSettings(context: vscode.ExtensionContext): void {
 			return;
 		}
 
-		await updateReplacementPairs(getUniqueReplacementPairs(message.pairs));
+		const duplicateSearchValues = getDuplicateSearchValues(message.pairs);
+		if (duplicateSearchValues.length > 0) {
+			const displayedValues = duplicateSearchValues.map(value => JSON.stringify(value)).join(', ');
+			void vscode.window.showErrorMessage(
+				`MultiReplace: Duplicate search values cannot be saved: ${displayedValues}`
+			);
+			return;
+		}
+
+		await updateReplacementPairs(message.pairs);
 		refreshSettingsPanel();
 		void vscode.window.showInformationMessage('MultiReplace settings saved.');
 	}, undefined, context.subscriptions);

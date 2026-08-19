@@ -23,4 +23,4 @@ Files use an array of search and replacement objects:
 ]
 ```
 
-Exact duplicate pairs are removed while preserving the first occurrence and table order.
+Search values must be unique and are compared case-sensitively. Saving a table with repeated search values displays an error listing those values and does not change the saved settings. During import, rows whose search value already exists are skipped, preserving the first occurrence and table order.
