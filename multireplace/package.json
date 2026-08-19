@@ -22,6 +22,12 @@
         "title": "MultiReplace: Open Settings"
       }
     ],
+    "submenus": [
+      {
+        "id": "multiReplace.contextMenu",
+        "label": "MultiReplace"
+      }
+    ],
     "configuration": {
       "title": "MultiReplace",
       "properties": {
@@ -53,12 +59,18 @@
     "menus": {
       "editor/context": [
         {
+          "submenu": "multiReplace.contextMenu",
+          "group": "1_modification"
+        }
+      ],
+      "multiReplace.contextMenu": [
+        {
           "command": "multiReplace.replaceInCurrentDocument",
-          "group": "1_modification@1"
+          "group": "navigation@1"
         },
         {
           "command": "multiReplace.openSettings",
-          "group": "1_modification@2"
+          "group": "navigation@2"
         }
       ]
     }
