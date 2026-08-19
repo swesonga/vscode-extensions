@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { applyReplacements } from '../extension';
+import { applyReplacements, getUniqueReplacementPairs } from '../extension';
 
 suite('MultiReplace', () => {
 	test('replaces every literal occurrence', () => {
@@ -26,6 +26,29 @@ suite('MultiReplace', () => {
 				{ search: '', replace: 'ignored' }
 			]),
 			'a-b ab'
+		);
+	});
+
+	test('removes duplicate pairs while preserving first occurrence order', () => {
+		assert.deepStrictEqual(
+			getUniqueReplacementPairs([
+				{ search: 'one', replace: '1' },
+				{ search: 'two', replace: '2' },
+				{ search: 'one', replace: '1' },
+				{ search: 'one', replace: 'first' }
+			]),
+			[
+				{ search: 'one', replace: '1' },
+				{ search: 'two', replace: '2' },
+				{ search: 'one', replace: 'first' }
+			]
+		);
+	});
+
+	test('rejects malformed imported data', () => {
+		assert.throws(
+			() => getUniqueReplacementPairs([{ search: 'one' }]),
+			/string "search" and "replace" properties/
 		);
 	});
 });

@@ -20,6 +20,14 @@
       {
         "command": "multiReplace.openSettings",
         "title": "MultiReplace: Open Settings"
+      },
+      {
+        "command": "multiReplace.importFromJson",
+        "title": "MultiReplace: Import Entries from JSON"
+      },
+      {
+        "command": "multiReplace.exportToJson",
+        "title": "MultiReplace: Export Entries to JSON"
       }
     ],
     "submenus": [
@@ -71,6 +79,14 @@
         {
           "command": "multiReplace.openSettings",
           "group": "navigation@2"
+        },
+        {
+          "command": "multiReplace.importFromJson",
+          "group": "navigation@3"
+        },
+        {
+          "command": "multiReplace.exportToJson",
+          "group": "navigation@4"
         }
       ]
     }
